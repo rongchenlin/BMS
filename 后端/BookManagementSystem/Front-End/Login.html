@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+    <form action="http://localhost:8080/bbs/login" method="get">
+        用户名：<input type="text" name="userName"><br/>
+        密码：<input type="text" name="pwd"><br/>
+        角色：<select name="role">
+                 <option>---请选择---</option>
+                 <option value="stu">学生</option>
+                 <option value="tea">教师</option>
+                 <option value="admin">管理员</option>
+               </select>        
+               <br/>
+        <input type="submit" value="登录">
+    </form>
+</body>
+</html>

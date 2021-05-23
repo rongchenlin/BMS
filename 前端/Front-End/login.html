@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		<style>
+		</style>
+	</head>
+	<body style="background-image: url(img/login.jpg);background-repeat:no-repeat;background-size: cover;width: 100%;height: 100%;overflow-x: hidden;overflow-y: hidden;" >
+		<div id="app">
+			<el-row style="height: 350px;margin-top:200px;">
+			  <el-col :span="6" :offset="9">
+				<el-form label-position="top" >
+					<el-form-item label="" >
+						<span style="color:royalblue;"><b>账号</b></span>
+						<el-input v-model="loginUser.uid" ></el-input>
+					</el-form-item>
+					<el-form-item label="">
+						<span style="color:royalblue;"><b>密码</b></span>
+						<el-input v-model="loginUser.upwd" show-password></el-input>
+					</el-form-item>
+					<el-form-item>
+					    <el-button type="primary" @click="doLogin" >登录</el-button>
+					</el-form-item>
+				</el-form>
+			  </el-col>
+			</el-row>
+		</div>
+		
+		<!-- import Vue before Element -->
+		<script src="https://unpkg.com/vue/dist/vue.js"></script>
+		<!-- import JavaScript -->
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+		<script src="js/axios.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			new Vue({
+				el:'#app',
+				data:{				
+					loginUser:{
+						uid:'',
+						upwd:''
+					}
+				},
+				methods:{
+					doLogin(){
+						let fd = new FormData();
+						for(let prop in this.loginUser){
+							fd.append(prop,this.loginUser[prop]);
+						}
+						axios.request({
+							url:'http://localhost:8080/bbs/user/login.do',
+							method:'post',
+							data:fd
+						}).then((res)=>{					
+							if(res.data.user){
+								//成功
+								this.$message('登录成功');
+								sessionStorage.setItem('loginUser',JSON.stringify(res.data.user))
+								location.href = 'http://127.0.0.1:8848/Front-End/main.html';
+							}else{
+								//失败
+								 this.$message('账号或密码错误');
+							}
+						}).catch((res)=>{
+							console.log(res)
+							this.$message('服务器连接失败');
+						})
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

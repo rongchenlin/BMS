@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script type="text/javascript">
+        // document.write("1");
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4) {
+                // document.write("2");
+                if (xhr.status == 200) {
+                    document.write("开始测试！");
+                    console.log(xhr.responseText)
+                }
+            }
+        }
+        xhr.open('get', 'http://localhost:8080/bbs/message/list', true);
+        xhr.send();
+    </script>
+</head>
+
+<body>
+    <!-- <script src="axios.min.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+        document.write("1");
+        axios.get("http://localhost:8080/bbs/message/list")
+            .then(function(res) {
+                document.write("2");
+                console.log(res);
+				
+				//document.write(res);
+            })
+    </script> -->
+</body>
+
+</html>

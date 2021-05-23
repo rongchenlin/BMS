@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<!-- import CSS -->
+		<link rel="stylesheet" href="https://unpkg.com/element-ui@2.15.1/lib/theme-chalk/index.css">
+		<style type="text/css">
+			.el-header,
+			.el-footer {
+				/* color: #333; */
+				text-align: center;
+				line-height: 120px;
+			}
+
+			.input {
+				height: 23px;
+				border: 1px solid #ccc;
+				padding: 7px 0px;
+				border-radius: 3px;
+				padding-left: 5px;
+				-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+				box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+				-webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+				-o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+				transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s
+			}
+
+			.input:focus {
+				border-color: #66afe9;
+				outline: 0;
+				-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+				box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6)
+			}
+
+			.el-aside {
+				/* background-color: #D3DCE6; */
+				/* color: #333; */
+				text-align: center;
+				line-height: 100px;
+				height: 610.7px;
+			}
+
+			.el-main {
+				/* background-color: #E9EEF3; */
+				/* color: #333; */
+				line-height: 80px;
+
+			}
+
+			.el-menu {
+				height: 500px;
+				margin-left: 35px;
+				margin-top: 35px;
+				width: 240px;
+			}
+
+			body>.el-container {
+				margin-bottom: 0px;
+			}
+
+			.el-container:nth-child(5) .el-aside,
+			.el-container:nth-child(6) .el-aside {
+				line-height: 30px;
+			}
+
+			.el-container:nth-child(7) .el-aside {
+				line-height: 20px;
+			}
+
+			.el-table {
+				/* opacity:1; */
+				filter: alpha(opacity=40);
+			}
+
+			body {
+				margin: 0px;
+				padding: 0px;
+			}
+		</style>
+	</head>
+
+	<body
+		style="background-image: url(img/2.jpg);background-repeat:no-repeat;background-size: cover;width: 100%;height: 100%;overflow-x: hidden;overflow-y: hidden;">
+
+		<!-- 引入Vue和elementUI -->
+		<script src="//unpkg.com/vue/dist/vue.js"></script>
+		<script src="//unpkg.com/element-ui@2.15.1/lib/index.js"></script>
+
+		<div id="app">
+			<el-container>
+				<el-header height="120px">
+					<!-- <img src="./img/logo.jpg"  width="100%" height="100%" /> -->
+				</el-header>
+				<el-container>
+					<el-aside>
+						<el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen"
+							@close="handleClose">
+							<el-menu-item index="2">
+								<i class="el-icon-menu"></i>
+								<span slot="title">图书管理</span>
+							</el-menu-item>
+
+							<el-menu-item index="3">
+								<i class="el-icon-setting"></i>
+								<span slot="title">人员管理</span>
+							</el-menu-item>
+
+							<el-menu-item index="4">
+								<i class="el-icon-setting"></i>
+								<span slot="title">借阅管理</span>
+							</el-menu-item>
+							<el-menu-item index="5">
+								<i class="el-icon-setting"></i>
+								<span slot="title">日志管理</span>
+							</el-menu-item>
+							<el-menu-item index="6">
+								<i class="el-icon-setting"></i>
+								<span slot="title">系统维护</span>
+							</el-menu-item>
+						</el-menu>
+					</el-aside>
+					<el-main>
+						<!-- 查询 -->
+						<span style="width:10px;margin:0; auto;">
+							<input class='input' type="text" v-model="inputName" />
+
+							<el-button @click="checkBook" icon="el-icon-search">搜索</el-button>
+						</span>
+
+						<!-- 编辑的弹出对话框 -->
+
+						<el-dialog title="修改图书" :visible.sync="dialogFormVisible_mod">
+							<el-form :model="form">
+								<el-form-item label="书籍名称" :label-width="formLabelWidth">
+									<el-input v-model="form.name" autocomplete="off"></el-input>
+								</el-form-item>
+								<el-form-item label="书籍作者" :label-width="formLabelWidth">
+									<el-input v-model="form.author" autocomplete="off"></el-input>
+								</el-form-item>
+								<el-form-item label="出版社" :label-width="formLabelWidth">
+									<el-input v-model="form.publisher" autocomplete="off"></el-input>
+								</el-form-item>
+							</el-form>
+							<div slot="footer" class="dialog-footer">
+								<el-button @click="dialogFormVisible_mod = false">取 消</el-button>
+								<el-button @click="doModify">确 定</el-button>
+							</div>
+						</el-dialog>
+
+						<!-- 新增的对话框 -->
+						<el-button icon="el-icon-edit" @click="dialogFormVisible_add = true">新增</el-button>
+						<el-dialog title="图书新增" :visible.sync="dialogFormVisible_add">
+							<el-form :model="form_add">
+								<el-form-item label="书籍名称" :label-width="formLabelWidth">
+									<el-input v-model="form_add.name" autocomplete="off"></el-input>
+								</el-form-item>
+								<el-form-item label="书籍作者" :label-width="formLabelWidth">
+									<el-input v-model="form_add.author" autocomplete="off"></el-input>
+								</el-form-item>
+								<el-form-item label="出版社" :label-width="formLabelWidth">
+									<el-input v-model="form_add.publisher" autocomplete="off"></el-input>
+								</el-form-item>
+							</el-form>
+							<div slot="footer" class="dialog-footer">
+								<el-button @click="dialogFormVisible_add = false">取 消</el-button>
+								<el-button @click="addBook">确 定</el-button>
+							</div>
+						</el-dialog>
+
+						<!-- 显示 -->
+						<el-table :data="messages" border style="width: 100% " bgcolor="transparent">
+							<el-table-column prop="bookID" label="书籍编号" width="240">
+							</el-table-column>
+							<el-table-column prop="bookName" label="书籍名称" width="240">
+							</el-table-column>
+							<el-table-column prop="bookAuthor" label="书籍作者" width="240">
+							</el-table-column>
+							<el-table-column prop="bookPublisher" label="书籍出版社" width="240">
+							</el-table-column>
+							<el-table-column label="操作" width="350">
+								<template slot-scope="scope">
+									<el-button @click="delMessage(scope.row)" type="text" size="small">删除</el-button>
+									<el-button type="text" size="small" @click="modifyBook(scope.$index, scope.row)">编辑
+									</el-button>
+								</template>
+							</el-table-column>
+							</el-table-column>
+						</el-table>
+
+						<!-- 分页 -->
+						<div class="page">
+							<el-pagination background :page-size="page.rn" :current-page="page.pn"
+								layout="prev, pager, next" :total="page.total" @current-change="pageChange">
+							</el-pagination>
+						</div>
+					</el-main>
+				</el-container>
+
+			</el-container>
+		</div>
+
+	</body>
+	<script src="//unpkg.com/vue/dist/vue.js"></script>
+	<script src="//unpkg.com/element-ui@2.15.1/lib/index.js">
+	< script src = "https://unpkg.com/vue/dist/vue.js" ></script>
+	<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+	<script src="js/axios.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		new Vue({
+			el: '#app',
+			data: {
+
+				// 用于新增数据的dialog变量		
+				dialogTableVisible_add: false,
+				dialogFormVisible_add: false,
+				form_add: {
+					id: '',
+					name: '',
+					author: '',
+					publisher: ''
+				},
+
+				// 用于修改数据的dialog变量
+				dialogFormVisible_mod: false,
+				dialogFormVisible_mod: false,
+				form: {
+					id: '',
+					name: '',
+					author: '',
+					publisher: ''
+				},
+				formLabelWidth: '120px', // 设置对话框的宽度
+				checkOk: '',
+				inputName: '',
+				bookName: '',
+				currUser: null,
+				messages: [],
+				page: {
+					pn: 1, //pagenumber
+					rn: 5, //rownumber
+					total: 100
+				}
+			},
+			methods: {
+				pageChange(num) {
+					this.page.pn = num;
+					this.loadMessage();
+				},
+				// 显示图书：加载数据
+				loadMessage() {
+					axios.request({
+						url: 'http://localhost:8080/bbs/book',
+						params: {
+							pn: this.page.pn,
+							rn: this.page.rn
+						}
+					}).then((res) => {
+						this.page.total = res.data.total;
+						this.messages = res.data.messages;
+					})
+				},
+				// 查询图书
+				checkBook() {
+					axios.request({
+						url: 'http://localhost:8080/bbs/book/query',
+						params: {
+							pn: this.page.pn,
+							rn: this.page.rn,
+							inputName: this.inputName
+						},
+					}).then((res) => {
+						this.messages = res.data.listByName;
+						this.page.total = res.data.total;
+					})
+				},
+
+				// 新增图书
+				addBook() {
+					axios.request({
+						url: 'http://localhost:8080/bbs/book/add',
+						params: {
+							pn: this.page.pn,
+							rn: this.page.rn,
+							addBookName: this.form_add.name,
+							addBookAuthor: this.form_add.author,
+							addBookPublisher: this.form_add.publisher
+						},
+					}).then((res) => {
+						this.checkOk = res.data.checkOK;
+						if (this.checkOk) {
+							this.$message('新增图书成功');
+						} else {
+							this.$message('新增图书失败')
+						}
+						this.loadMessage()
+					})
+					this.form_add.name = "";
+					this.form_add.author = "";
+					this.form_add.publisher = "";
+					this.dialogFormVisible_add = false;
+				},
+				// 删除图书
+				delMessage(row) {
+					this.$confirm('是否删除消息, 是否继续?', '提示', {
+						confirmButtonText: '删除', //确定按钮的文字
+						cancelButtonText: '取消', //取消按钮文字
+						type: 'warning' //图标类型
+					}).then(() => { //确定按钮的执行代码
+						axios.request({
+							url: 'http://localhost:8080/bbs/books/del',
+							params: {
+								mid: row.bookID,
+							}
+						}).then((res) => {
+							this.checkOk = res.data.checkOK;
+							if (this.checkOk) {
+								this.$message('删除成功');
+							} else {
+								this.$message('删除失败')
+							}
+							this.loadMessage()
+						})
+					}).catch(() => { //取消按钮的执行代码
+					});
+				},
+				// 实际修改	
+				doModify() {
+					axios.request({
+						url: 'http://localhost:8080/bbs/book/mod',
+						params: {
+							mod_id: this.form.id,
+							mod_name: this.form.name,
+							mod_publisher: this.form.publisher,
+							mod_author: this.form.author
+						},
+					}).then((res) => {
+						this.checkOk = res.data.checkOK;
+						if (this.checkOk) {
+							this.$message('编辑成功');
+						} else {
+							this.$message('编辑失败');
+						}
+						this.loadMessage();
+					})
+					this.loadMessage();
+					this.dialogFormVisible_mod = false;
+				},
+
+				// 修改图书
+				modifyBook(index, row) {
+					console.log(index, row);
+					this.dialogFormVisible_mod = true;
+					this.form.id = row.bookID;
+					this.form.author = row.bookAuthor;
+					this.form.name = row.bookName;
+					this.form.publisher = row.bookPublisher;
+				},
+
+				// 导航栏函数
+				handleOpen(key, keyPath) {
+					console.log(key, keyPath);
+				},
+				handleClose(key, keyPath) {
+					console.log(key, keyPath);
+				}
+			},
+			created() {
+				this.currUser = JSON.parse(sessionStorage.getItem('loginUser'))
+				this.loadMessage();
+			}
+		})
+	</script>
+
+</html>
